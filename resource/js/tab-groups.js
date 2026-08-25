@@ -212,7 +212,12 @@ function startGroupsApp () {
       }
     },
     template: `
-      <div v-click-tab-groups="handleClickGroupsEvent" v-click-collapse-btn="setListStyle" v-resize-window="setListStyle">
+      <div
+        v-click-tab-groups="handleClickGroupsEvent"
+        v-click-collapse-btn="setListStyle" 
+        v-resize-window="setListStyle"
+        v-window-popstate="() => selectedGroup = ''"
+      >
         <div id="groups-list" class="sidebar-list p-0" tabindex="-1" :style="listStyle">
           <ul v-if="!loadingGroups" aria-labelledby="groups" role="tree" class="list-group">
             <tab-groups-wrapper
@@ -267,6 +272,19 @@ function startGroupsApp () {
     },
     unmounted: el => {
       window.removeEventListener('resize', el.resizeWindowEvent)
+    }
+  })
+
+  /* Custom directive used to add an event listener on popstate events */
+  tabGroupsApp.directive('window-popstate', {
+    beforeMount: (el, binding) => {
+      el.windowPopstateEvent = event => {
+        binding.value() // calling the method given as the attribute value
+      }
+      window.addEventListener('popstate', el.windowPopstateEvent) // registering an event listener on popstate events
+    },
+    unmounted: el => {
+      window.removeEventListener('popstate', el.windowPopstateEvent)
     }
   })
 

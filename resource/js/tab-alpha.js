@@ -154,7 +154,12 @@ function startAlphaApp () {
       }
     },
     template: `
-      <div v-click-tab-alphabetical="handleClickAlphabeticalEvent" v-click-collapse-btn="setListStyle" v-resize-window="setListStyle">
+      <div
+        v-click-tab-alphabetical="handleClickAlphabeticalEvent"
+        v-click-collapse-btn="setListStyle"
+        v-resize-window="setListStyle"
+        v-window-popstate="() => selectedConcept = ''"
+      >
         <tab-alpha
           :index-letters="indexLetters"
           :index-concepts="indexConcepts"
@@ -212,6 +217,19 @@ function startAlphaApp () {
     },
     unmounted: el => {
       window.removeEventListener('resize', el.resizeWindowEvent)
+    }
+  })
+
+  /* Custom directive used to add an event listener on popstate events */
+  tabAlphaApp.directive('window-popstate', {
+    beforeMount: (el, binding) => {
+      el.windowPopstateEvent = event => {
+        binding.value() // calling the method given as the attribute value
+      }
+      window.addEventListener('popstate', el.windowPopstateEvent) // registering an event listener on popstate events
+    },
+    unmounted: el => {
+      window.removeEventListener('popstate', el.windowPopstateEvent)
     }
   })
 

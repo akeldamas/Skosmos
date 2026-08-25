@@ -430,4 +430,30 @@ describe('Concept page', () => {
         })
       })
   })
+  it('handles navigating back and forward in browser\'s history', () => {
+    // Go to YSO home page
+    cy.visit('/yso/en/')
+    // Click on the link to "abstract objects" to trigger partial page load
+    cy.get('#tab-alphabetical').contains('a', 'abstract objects').click()
+    // Check that partial page load was successful
+    cy.get('#concept-heading h1', {timeout: 10000}).should('contain', 'abstract objects')
+    // Click on the link to "acid" to trigger partial page load
+    cy.get('#tab-alphabetical').contains('a', 'acids').click()
+    // Check that partial page load was successful
+    cy.get('#concept-heading h1', {timeout: 10000}).should('contain', 'acids')
+    // Trigger browser's back button
+    cy.go('back')
+    // Check that partial page load was successful
+    cy.get('#concept-heading h1', {timeout: 10000}).should('contain', 'abstract objects')
+    // Check that selected concept highlight is removed from alphabetical list
+    cy.get('#tab-alphabetical .sidebar-list .selected').should('not.exist')
+    // Trigger browser's forward button
+    cy.go('forward')
+    // Check that partial page load was successful
+    cy.get('#concept-heading h1', {timeout: 10000}).should('contain', 'acids')
+    // Go back two pages in history
+    cy.go(-2)
+    // Check that vocab home page is loaded
+    cy.get('#vocab-heading', {timeout: 10000}).should('exist')
+  })
 })
