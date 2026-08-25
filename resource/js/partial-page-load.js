@@ -133,7 +133,7 @@ const partialPageLoad = (event, pageUri) => {
 window.addEventListener('popstate', (e) => {
   // Do a partial page load when moving to a concept page, otherwise load new page fully
   if (window.location.href.includes(`${window.SKOSMOS.vocab}/${window.SKOSMOS.lang}/page/`)) {
-    if (e.state && e.state.url) {
+    if (e.state?.url) {
       partialPageLoad(e, e.state.url)
     } else {
       partialPageLoad(e, window.location.href)
