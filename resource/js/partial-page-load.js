@@ -139,6 +139,6 @@ window.addEventListener('popstate', (e) => {
       partialPageLoad(e, window.location.href)
     }
   } else {
-    window.open(window.location.href, '_self')
+    window.location.reload()
   }
 })
