@@ -367,7 +367,12 @@ function startHierarchyApp () {
       }
     },
     template: `
-      <div v-click-tab-hierarchy="handleClickHierarchyEvent" v-click-collapse-btn="setListStyle" v-resize-window="setListStyle">
+      <div
+        v-click-tab-hierarchy="handleClickHierarchyEvent"
+        v-click-collapse-btn="setListStyle"
+        v-resize-window="setListStyle"
+        v-window-popstate="() => selectedConcept = ''"
+      >
         <div id="hierarchy-list" class="sidebar-list p-0" tabindex="-1" :style="listStyle">
           <ul class="list-group" aria-labelledby="hierarchy" role="tree" v-if="!loadingHierarchy">
             <tab-hier-wrapper
@@ -424,6 +429,19 @@ function startHierarchyApp () {
     },
     unmounted: el => {
       window.removeEventListener('resize', el.resizeWindowEvent)
+    }
+  })
+
+  /* Custom directive used to add an event listener on popstate events */
+  tabHierApp.directive('window-popstate', {
+    beforeMount: (el, binding) => {
+      el.windowPopstateEvent = event => {
+        binding.value() // calling the method given as the attribute value
+      }
+      window.addEventListener('popstate', el.windowPopstateEvent) // registering an event listener on popstate events
+    },
+    unmounted: el => {
+      window.removeEventListener('popstate', el.windowPopstateEvent)
     }
   })
 
