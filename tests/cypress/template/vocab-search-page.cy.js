@@ -74,6 +74,14 @@ describe('Vocabulary search page', () => {
     // Listen to the API call
     cy.intercept('GET', '/yso/en/search?clang=en&q=an*').as('search')
 
+    // The scroll handler attaches via onTranslationReady(), which runs after the
+    // async translation fetch resolves. Wait for translations to be ready first so
+    // the listener is attached before we scroll; otherwise scrollTo happens with no
+    // listener present and never dispatches a 'scroll' event, so no request fires.
+    cy.window().then(win => new Promise(resolve => {
+      win.onTranslationReady(() => resolve())
+    }))
+
     cy.scrollTo('bottom')
 
     // Wait for the API call to finish
