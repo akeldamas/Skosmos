@@ -2,7 +2,29 @@
 
 let searchResultOffset = window.SKOSMOS.search_results_size
 
+// DIAGNOSTIC: record when this script first runs, so we can order events in CI logs
+const loadSearchResultsStart = Date.now()
+function lsrTimestamp () { return Date.now() - loadSearchResultsStart }
+
+// DIAGNOSTIC: log to console AND persist to localStorage. Headless Cypress under
+// GitHub Actions hides the browser console, but cy.task (Node main process) can
+// reach localStorage and echo these lines into the CI stdout text log.
+function lsrLog (msg) {
+  // eslint-disable-next-line no-console
+  console.log('[load-search-results] ' + msg)
+  try {
+    const key = '__lsrDiag'
+    let arr = []
+    if (window.localStorage && window.localStorage.getItem(key)) {
+      arr = JSON.parse(window.localStorage.getItem(key))
+    }
+    arr.push(msg)
+    window.localStorage.setItem(key, JSON.stringify(arr))
+  } catch (e) { /* ignore storage errors */ }
+}
+
 function handleScrollEvent () {
+  lsrLog('@' + lsrTimestamp() + 'ms handleScrollEvent fired! bottomVisible path. offset=' + searchResultOffset)
   const searchResultList = document.getElementById('search-results')
 
   // Only load new search results if the bottom of the result list is visible and no unloaded results remain
@@ -57,9 +79,19 @@ function handleScrollEvent () {
 }
 
 function registerSearchResultEventListener () {
+  lsrLog('@' + lsrTimestamp() + 'ms onTranslationReady fired; attaching scroll listener. pageType=' + (window.SKOSMOS ? window.SKOSMOS.pageType : 'undefined'))
   if (window.SKOSMOS.pageType === 'vocab-search' || window.SKOSMOS.pageType === 'global-search') {
     document.addEventListener('scroll', handleScrollEvent)
+    lsrLog('@' + lsrTimestamp() + 'ms scroll listener attached. scrollTop=' + document.documentElement.scrollTop + ' clientHeight=' + document.documentElement.clientHeight + ' offsetHeight=' + document.documentElement.offsetHeight)
+  } else {
+    lsrLog('@' + lsrTimestamp() + 'ms onTranslationReady fired but did NOT attach scroll listener (pageType=' + window.SKOSMOS.pageType + ')')
   }
 }
 
 onTranslationReady(registerSearchResultEventListener)
+
+// DIAGNOSTIC: log the moment scrollTo would trigger a fetch so we can see if it ever runs
+function diagnosticScrollProbe () {
+  lsrLog('@' + lsrTimestamp() + 'ms scroll event fired at scrollTop=' + window.scrollY)
+}
+document.addEventListener('scroll', diagnosticScrollProbe, { passive: true })

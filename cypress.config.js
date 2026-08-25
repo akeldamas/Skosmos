@@ -18,7 +18,9 @@ module.exports = defineConfig({
         }
       })
     },
-    supportFile: false,
+    // Custom support file surfaces browser-side console.log from
+    // load-search-results.js into the Cypress report (visible in headless CI).
+    supportFile: 'tests/cypress/support/load-search-results-diag.js',
     specPattern: [
       'tests/cypress/accessibility/**/*.cy.js',
       'tests/cypress/template/**/*.cy.js',
