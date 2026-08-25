@@ -89,7 +89,7 @@ const moveFocus = () => {
 
 /* eslint-disable no-unused-vars */
 const partialPageLoad = (event, pageUri) => {
-  event.type != 'popstate' && event.preventDefault()
+  event.type !== 'popstate' && event.preventDefault()
 
   // fetching html content of the concept page
   fetchWithAbort(pageUri, 'concept')
@@ -98,8 +98,8 @@ const partialPageLoad = (event, pageUri) => {
     })
     .then(data => {
       // updating url and history when clicking on concept links
-      if (event.type != 'popstate' && window.history.pushState) { window.history.pushState({ url: pageUri }, '', pageUri) }
-      
+      if (event.type !== 'popstate' && window.history.pushState) { window.history.pushState({ url: pageUri }, '', pageUri) }
+
       // removing disabled class from hierarchy tab
       if (document.querySelector('#hierarchy > a')) {
         document.querySelector('#hierarchy').classList.remove('disabled')
@@ -130,7 +130,7 @@ const partialPageLoad = (event, pageUri) => {
 /* eslint-disable no-unused-vars */
 
 // Event listener for handling browser's back and forward navigation
-window.addEventListener("popstate", (e) => {
+window.addEventListener('popstate', (e) => {
   // Do a partial page load when moving to a concept page, otherwise load new page fully
   if (window.location.href.includes(`${window.SKOSMOS.vocab}/${window.SKOSMOS.lang}/page/`)) {
     if (e.state && e.state.url) {
@@ -139,6 +139,6 @@ window.addEventListener("popstate", (e) => {
       partialPageLoad(e, window.location.href)
     }
   } else {
-    open(window.location.href, '_self')
+    window.open(window.location.href, '_self')
   }
 })
