@@ -1,3 +1,5 @@
+/* global $t, onTranslationReady */
+
 const fetchWithAbort = (function () {
   const controllers = {}
 
@@ -87,7 +89,6 @@ const moveFocus = () => {
   document.getElementById('concept-preflabel').focus()
 }
 
-/* eslint-disable no-unused-vars */
 const partialPageLoad = (event, pageUri) => {
   event.type !== 'popstate' && event.preventDefault()
 
@@ -100,12 +101,6 @@ const partialPageLoad = (event, pageUri) => {
       // updating url and history when clicking on concept links
       if (event.type !== 'popstate' && window.history.pushState) { window.history.pushState({ url: pageUri }, '', pageUri) }
 
-      // removing disabled class from hierarchy tab
-      if (document.querySelector('#hierarchy > a')) {
-        document.querySelector('#hierarchy').classList.remove('disabled')
-        document.querySelector('#hierarchy > a').classList.remove('disabled')
-      }
-
       // concept page HTML
       const conceptHTML = document.createElement('div')
       conceptHTML.innerHTML = data.trim()
@@ -117,6 +112,34 @@ const partialPageLoad = (event, pageUri) => {
       updateSKOSMOS(conceptHTML)
       moveFocus()
 
+      // removing/adding disabled class from hierarchy tab
+      if (document.querySelector('#hierarchy > a')) {
+        if (window.SKOSMOS.isGroup) { // Add disabled class if opening a group page
+          document.querySelector('#hierarchy').classList.add('disabled')
+          document.querySelector('#hierarchy > a').classList.add('disabled')
+
+          const setTooltip = () => {
+            // Prevent a race condition
+            if (!document.querySelector('#hierarchy').classList.contains('disabled')) return
+
+            document.querySelector('#hierarchy').setAttribute('data-title', $t('hierarchy-disabled-help'))
+          }
+
+          // Add tooltip text
+          if (typeof $t !== 'undefined') {
+            document.querySelector('#hierarchy').setAttribute('data-title', $t('hierarchy-disabled-help'))
+          } else {
+            onTranslationReady(setTooltip)
+          }
+          
+        } else { // Otherwise remove disabled class and tooltip text
+          document.querySelector('#hierarchy').classList.remove('disabled')
+          document.querySelector('#hierarchy > a').classList.remove('disabled')
+          document.querySelector('#hierarchy').removeAttribute('data-title')
+        }
+        
+      }
+
       // custom event to signal that a new concept page was loaded
       const e = new Event('loadConceptPage')
       document.dispatchEvent(e)
@@ -127,7 +150,6 @@ const partialPageLoad = (event, pageUri) => {
       }
     })
 }
-/* eslint-disable no-unused-vars */
 
 // Event listener for handling browser's back and forward navigation
 window.addEventListener('popstate', (e) => {

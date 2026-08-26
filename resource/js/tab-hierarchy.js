@@ -51,42 +51,50 @@ function startHierarchyApp () {
           this.loadTopConcepts()
         }
       },
-      loadTopConcepts () {
+      async loadTopConcepts () {
         this.loadingHierarchy = true
         if (window.SKOSMOS.showConceptSchemesInHierarchy) {
           // if concept schemes are shown in hierarchy, fetch them from API and set them as top concepts in hierarchy
           const params = new URLSearchParams({ lang: window.SKOSMOS.content_lang })
-          fetch(`rest/v1/${window.SKOSMOS.vocab}/?${params}`)
-            .then(data => {
-              return data.json()
-            })
-            .then(data => {
-              this.hierarchy = []
-
-              for (const c of data.conceptschemes.sort((a, b) => this.compareConcepts(a, b))) {
-                this.hierarchy.push({ uri: c.uri, label: c.title || c.label, hasChildren: true, children: [], isOpen: false, notation: undefined, isScheme: true })
-              }
-
-              this.addIndicesToHierarchy()
+          try {
+            const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/?${params}`)
+            if (!res.ok) {
               this.loadingHierarchy = false
-            })
+              return
+            }
+            const data = await res.json()
+            this.hierarchy = []
+
+            for (const c of data.conceptschemes.sort((a, b) => this.compareConcepts(a, b))) {
+              this.hierarchy.push({ uri: c.uri, label: c.title || c.label, hasChildren: true, children: [], isOpen: false, notation: undefined, isScheme: true })
+            }
+
+            this.addIndicesToHierarchy()
+            this.loadingHierarchy = false
+          } catch (e) {
+            this.loadingHierarchy = false
+          }
         } else {
           // otherwise, fetch top concepts
           const params = new URLSearchParams({ lang: window.SKOSMOS.content_lang })
-          fetch(`rest/v1/${window.SKOSMOS.vocab}/topConcepts/?${params}`)
-            .then(data => {
-              return data.json()
-            })
-            .then(data => {
-              this.hierarchy = []
-
-              for (const c of data.topconcepts.sort((a, b) => this.compareConcepts(a, b))) {
-                this.hierarchy.push(this.createConceptNode(c))
-              }
-
-              this.addIndicesToHierarchy()
+          try {
+            const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/topConcepts/?${params}`)
+            if (!res.ok) {
               this.loadingHierarchy = false
-            })
+              return
+            }
+            const data = await res.json()
+            this.hierarchy = []
+
+            for (const c of data.topconcepts.sort((a, b) => this.compareConcepts(a, b))) {
+              this.hierarchy.push(this.createConceptNode(c))
+            }
+
+            this.addIndicesToHierarchy()
+            this.loadingHierarchy = false
+          } catch (e) {
+            this.loadingHierarchy = false
+          }
         }
       },
       async loadConceptHierarchy () {
@@ -156,12 +164,20 @@ function startHierarchyApp () {
       },
       async loadConceptSchemes () {
         const params = new URLSearchParams({ lang: window.SKOSMOS.content_lang })
-        const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/?${params}`)
-        const data = await res.json()
+        try {
+          const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/?${params}`)
+          if (!res.ok) {
+            this.loadingHierarchy = false
+            return
+          }
+          const data = await res.json()
 
-        for (const s of data.conceptschemes.sort((a, b) => this.compareConcepts(a, b))) {
-          const schemeNode = { uri: s.uri, label: s.title || s.label, hasChildren: true, children: [], isOpen: s.uri === window.SKOSMOS.uri, notation: undefined, isScheme: true }
-          this.hierarchy.push(schemeNode)
+          for (const s of data.conceptschemes.sort((a, b) => this.compareConcepts(a, b))) {
+            const schemeNode = { uri: s.uri, label: s.title || s.label, hasChildren: true, children: [], isOpen: s.uri === window.SKOSMOS.uri, notation: undefined, isScheme: true }
+            this.hierarchy.push(schemeNode)
+          }
+        } catch (e) {
+          this.loadingHierarchy = false
         }
       },
       async loadTopConceptsForConceptScheme () {
@@ -169,41 +185,57 @@ function startHierarchyApp () {
           scheme: window.SKOSMOS.uri,
           lang: window.SKOSMOS.content_lang
         })
-        const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/topConcepts?${params}`)
-        const data = await res.json()
+        try {
+          const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/topConcepts?${params}`)
+          if (!res.ok) {
+            this.loadingHierarchy = false
+            return
+          }
+          const data = await res.json()
 
-        // find selected scheme in hierarchy
-        const scheme = this.hierarchy.find(s => s.uri === window.SKOSMOS.uri)
-        // add top concepts to hierarchy as the scheme's children
-        scheme.children = data.topconcepts
-          .sort((a, b) => this.compareConcepts(a, b))
-          .map(c => this.createConceptNode(c))
+          // find selected scheme in hierarchy
+          const scheme = this.hierarchy.find(s => s.uri === window.SKOSMOS.uri)
+          // add top concepts to hierarchy as the scheme's children
+          scheme.children = data.topconcepts
+            .sort((a, b) => this.compareConcepts(a, b))
+            .map(c => this.createConceptNode(c))
+        } catch (e) {
+          this.loadingHierarchy = false
+        }
       },
       async loadHierarchyForConcept () {
         const params = new URLSearchParams({
           uri: window.SKOSMOS.uri,
           lang: window.SKOSMOS.content_lang
         })
-        const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/hierarchy/?${params}`)
-        const data = await res.json()
-
-        // transform broaderTransitive to an array and sort it
-        const bt = Object.values(data.broaderTransitive).sort((a, b) => this.compareConcepts(a, b))
-        const parents = [] // queue of nodes in hierarchy tree with potential missing child nodes
-
-        // add top concepts to hierarchy tree
-        for (const concept of bt) {
-          if (concept.top || !concept.broader) {
-            this.addTopConceptsToHierarchy(concept, parents)
+        try {
+          const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/hierarchy/?${params}`)
+          if (!res.ok) {
+            this.loadingHierarchy = false
+            return
           }
-        }
+          const data = await res.json()
+        
+          // transform broaderTransitive to an array and sort it
+          const bt = Object.values(data.broaderTransitive).sort((a, b) => this.compareConcepts(a, b))
+          const parents = [] // queue of nodes in hierarchy tree with potential missing child nodes
 
-        // add other concepts to hierarchy tree
-        this.addChildConceptsToHierarchy(bt, parents)
+          // add top concepts to hierarchy tree
+          for (const concept of bt) {
+            if (concept.top || !concept.broader) {
+              this.addTopConceptsToHierarchy(concept, parents)
+            }
+          }
 
-        // if concept schemes are in shown hierarchy, open the concept scheme that contains selected concept
-        if (window.SKOSMOS.showConceptSchemesInHierarchy) {
-          this.openContainingScheme()
+          // add other concepts to hierarchy tree
+          this.addChildConceptsToHierarchy(bt, parents)
+
+          // if concept schemes are in shown hierarchy, open the concept scheme that contains selected concept
+          if (window.SKOSMOS.showConceptSchemesInHierarchy) {
+            this.openContainingScheme()
+          }
+        } catch (e) {
+          this.loadingHierarchy = false
         }
       },
       addTopConceptsToHierarchy (concept, parents) {

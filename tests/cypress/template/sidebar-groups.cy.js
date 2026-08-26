@@ -13,6 +13,8 @@ describe('Groups tab', () => {
   it('Loads groups and expands hierarchy on group page', () => {
     // Go to "Freshwater fish" group page
     cy.visit('groups/en/page/?uri=http%3A%2F%2Fwww.skosmos.skos%2Fgroups%2Ffresh')
+    // Check that groups tab is opened
+    cy.get('#groups a').should('have.class', 'active')
     // Check that selected element is "Freshwater fish"
     cy.get('#groups-list .selected').should('have.length', 1).invoke('text').should('contain', 'Freshwater fish')
     // Check that "Freshwater fish" has 1 child "Carp"

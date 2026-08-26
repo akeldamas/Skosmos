@@ -211,4 +211,23 @@ describe('Hierarchy', () => {
     cy.press(Cypress.Keyboard.Keys.SPACE)
     cy.get('#concept-heading h1', {'timeout': 15000}).invoke('text').should('equal', 'Birds')
   })
+  it('Disables and enables the hierarchy tab correctly when opening group and concept pages', () => {
+    // Go to test vocab home page
+    cy.visit('/yso/en/')
+    // Check that hierarchy tab is available and no tooltip is available
+    cy.get('#hierarchy').should('not.have.class', 'disabled')
+    cy.get('#hierarchy').should('not.have.attr', 'data-title')
+    // Open groups tab
+    cy.get('#groups').click()
+    // Click first group link
+    cy.get('#groups-list li a').eq(0).click()
+    // Check that hierarchy tab is disabled and tooltip is available
+    cy.get('#hierarchy').should('have.class', 'disabled')
+    cy.get('#hierarchy').should('have.attr', 'data-title', 'The top level hierarchy can\'t be shown in this vocabulary.')
+    // Click first concept link
+    cy.get('#groups-list li a').eq(1).click()
+    // Check that hierarchy tab is not disabled and no tooltip is available
+    cy.get('#hierarchy').should('not.have.class', 'disabled')
+    cy.get('#hierarchy').should('not.have.attr', 'data-title')
+  })
 })

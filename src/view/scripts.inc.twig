@@ -18,6 +18,7 @@ window.SKOSMOS = {
   {% if request.page == "page" and concept -%}
   "prefLabels": [{"lang": "{{ concept.label.lang }}", "label": "{{ concept.label }}"}{% for data in concept.foreignLabels %}{% for literal in data.prefLabel %}, {"lang": "{{ literal.lang }}", "label": "{{ literal.label }}"}{% endfor %}{% endfor %}],
   "uri": "{{ concept.uri }}",
+  "isGroup": {{ concept.isGroup ? "true" : "false" }},
   {% endif %}
   {%- if request.vocab ~%}
   "showNotation": {{ request.vocab.config.showNotation ? "true" : "false" }},
