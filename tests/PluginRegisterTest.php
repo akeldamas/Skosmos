@@ -26,11 +26,11 @@ class PluginRegisterTest extends PHPUnit\Framework\TestCase
                             ),
                             'test-plugin1' => array( 'js' => array( 0 => 'plugin1.js', 1 => 'second.min.js'),
                                                      'css' => array( 0 => 'stylesheet.css', ),
-                                                     'callback' => array( 0 => 'callplugin1')
+                                                     'callback' => array( 0 => 'callplugin1', 1 => 'secondplugin')  // multiple callbacks to test overwrite bug
                             ),
                             'test-plugin2' => array( 'js' => array( 0 => 'plugin2.js', ),
-                                                     'css' => array( 0 => 'stylesheet.css', ),
-                                                     'callback' => array( 0 => 'callplugin2')
+                                                     'css' => array( 0 => 'stylesheet.css', )
+                                                     // NO callback entry to test numeric index leak bug
                             ),
                             'test-plugin3' => array( 'js' => array( 0 => 'plugin3.js', ),
                                                      'css' => array( 0 => 'stylesheet.css', ),
@@ -151,10 +151,13 @@ class PluginRegisterTest extends PHPUnit\Framework\TestCase
     public function testGetPluginCallbacks()
     {
         $plugins = new PluginRegister();
+        // test-plugin1 now has TWO callbacks - verify both are returned
         $this->assertEquals(
-            array('plugins/test-plugin1/callplugin1'),
+            array('plugins/test-plugin1/callplugin1', 'plugins/test-plugin1/secondplugin'),
             $this->mockpr->getPluginCallbacks()['test-plugin1']
         );
+        // test-plugin2 has NO callback entry - should be absent from results
+        $this->assertArrayNotHasKey('test-plugin2', $this->mockpr->getPluginCallbacks());
     }
 
     /**
@@ -162,10 +165,37 @@ class PluginRegisterTest extends PHPUnit\Framework\TestCase
      */
     public function testGetCallbacks()
     {
+        // test-plugin2 has NO callback entry, so it should NOT appear in callbacks
+        // test-plugin1 has TWO callbacks, both should be preserved
         $this->assertEquals(
-            array('callplugin2', 'bravo', 'imaginaryPlugin', 'callplugin1', 'alpha', 'charlie', 'callplugin3'),
+            array('bravo', 'imaginaryPlugin', 'callplugin1', 'secondplugin', 'alpha', 'charlie', 'callplugin3'),
             $this->mockpr->getCallbacks()
         );
+    }
+
+    /**
+     * @covers PluginRegister::getCallbacks
+     * Tests that multiple callbacks per plugin are all preserved, not overwritten
+     */
+    public function testGetCallbacksMultiplePerPlugin()
+    {
+        // Verify that test-plugin1's second callback 'secondplugin' is included
+        $callbacks = $this->mockpr->getCallbacks();
+        $this->assertContains('callplugin1', $callbacks, 'First callback for test-plugin1 should be present');
+        $this->assertContains('secondplugin', $callbacks, 'Second callback for test-plugin1 should be present (not overwritten)');
+    }
+
+    /**
+     * @covers PluginRegister::getCallbacks
+     * Tests that plugins without callback entry don't cause numeric indices to leak
+     */
+    public function testGetCallbacksNoNumericLeak()
+    {
+        $callbacks = $this->mockpr->getCallbacks();
+        // Verify no numeric values leak into the result
+        foreach ($callbacks as $callback) {
+            $this->assertIsString($callback, "Callback value should be a string, got: " . var_export($callback, true));
+        }
     }
 
 }
