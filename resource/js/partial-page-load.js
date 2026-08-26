@@ -117,20 +117,12 @@ const partialPageLoad = (event, pageUri) => {
         if (window.SKOSMOS.isGroup) { // Add disabled class if opening a group page
           document.querySelector('#hierarchy').classList.add('disabled')
           document.querySelector('#hierarchy > a').classList.add('disabled')
-
-          const setTooltip = () => {
+          onTranslationReady(() => {
             // Prevent a race condition
-            if (!document.querySelector('#hierarchy').classList.contains('disabled')) return
-
-            document.querySelector('#hierarchy').dataset.title = $t('hierarchy-disabled-help')
-          }
-
-          // Add tooltip text
-          if (typeof $t !== 'undefined') {
-            document.querySelector('#hierarchy').dataset.title = $t('hierarchy-disabled-help')
-          } else {
-            onTranslationReady(setTooltip)
-          }
+            if (document.querySelector('#hierarchy').classList.contains('disabled')) {
+              document.querySelector('#hierarchy').dataset.title = $t('hierarchy-disabled-help')
+            }
+          })
         } else { // Otherwise remove disabled class and tooltip text
           document.querySelector('#hierarchy').classList.remove('disabled')
           document.querySelector('#hierarchy > a').classList.remove('disabled')
