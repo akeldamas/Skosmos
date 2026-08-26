@@ -130,8 +130,8 @@ const partialPageLoad = (event, pageUri) => {
             document.querySelector('#hierarchy').setAttribute('data-title', $t('hierarchy-disabled-help'))
           } else {
             onTranslationReady(setTooltip)
-          }  
-        } else {// Otherwise remove disabled class and tooltip text
+          }
+        } else { // Otherwise remove disabled class and tooltip text
           document.querySelector('#hierarchy').classList.remove('disabled')
           document.querySelector('#hierarchy > a').classList.remove('disabled')
           document.querySelector('#hierarchy').removeAttribute('data-title')
