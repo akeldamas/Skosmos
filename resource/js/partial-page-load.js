@@ -122,19 +122,19 @@ const partialPageLoad = (event, pageUri) => {
             // Prevent a race condition
             if (!document.querySelector('#hierarchy').classList.contains('disabled')) return
 
-            document.querySelector('#hierarchy').setAttribute('data-title', $t('hierarchy-disabled-help'))
+            document.querySelector('#hierarchy').dataset.title = $t('hierarchy-disabled-help')
           }
 
           // Add tooltip text
           if (typeof $t !== 'undefined') {
-            document.querySelector('#hierarchy').setAttribute('data-title', $t('hierarchy-disabled-help'))
+            document.querySelector('#hierarchy').dataset.title = $t('hierarchy-disabled-help')
           } else {
             onTranslationReady(setTooltip)
           }
         } else { // Otherwise remove disabled class and tooltip text
           document.querySelector('#hierarchy').classList.remove('disabled')
           document.querySelector('#hierarchy > a').classList.remove('disabled')
-          document.querySelector('#hierarchy').removeAttribute('data-title')
+          delete document.querySelector('#hierarchy').dataset.title
         }
       }
 
