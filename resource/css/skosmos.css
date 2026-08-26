@@ -276,6 +276,10 @@ header .container-fluid .row {
   list-style: none;
 }
 
+#search-wrapper {
+  align-items: flex-end;
+}
+
 #search-wrapper ul {
   padding-top: 0rem;
   padding-bottom: 0rem;
@@ -333,6 +337,16 @@ header .container-fluid .row {
   transform: translate(0, -50%);
 
   z-index: 2;
+}
+
+.search-field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-field-label {
+  white-space: nowrap;
+  color: var(--muted-color);
 }
 
 /* Language selector  */
@@ -460,6 +474,10 @@ header .container-fluid .row {
 
 #search-wrapper #vocab-list, #search-wrapper #language-list {
   --bs-dropdown-link-hover-bg: transparent;
+}
+
+#language-selector button {
+  min-width: 10rem;
 }
 
 #search-wrapper #vocab-selector input, #search-wrapper #language-selector input {

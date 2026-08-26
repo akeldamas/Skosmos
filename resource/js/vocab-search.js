@@ -16,20 +16,17 @@ function startVocabSearchApp () {
       }
     },
     computed: {
-      searchPlaceholder () {
-        return $t('Search in this vocabulary')
-      },
       anyLanguages () {
         return $t('Any language')
       },
       noResults () {
         return $t('No results')
       },
-      selectSearchLanguageAriaMessage () {
-        return $t('Select search language')
+      contentLanguageMessage () {
+        return $t('Content language')
       },
-      searchFieldAriaMessage () {
-        return $t('Search in this vocabulary')
+      searchLabel () {
+        return $t('Enter search term')
       },
       searchButtonAriaMessage () {
         return $t('Search')
@@ -333,76 +330,65 @@ function startVocabSearchApp () {
     template: `
       <div class="input-group ps-xl-2 flex-nowrap" id="search-wrapper">
 
-      <div class="dropdown" id="language-selector">
-          <button
-            ref="langButton"
-            class="btn btn-outline-secondary dropdown-toggle"
-            data-bs-toggle="dropdown"
-            @keydown="onLangMenuKeydown"
-            aria-haspopup="true"
-            :aria-label="selectSearchLanguageAriaMessage">
-            <template v-if="languageStrings">{{ languageStrings[selectedLanguage] }}</template>
-            <i class="chevron fa-solid fa-chevron-down"></i>
-          </button>
+        <div class="search-field-group">
+          <label id="content-language-label" class="search-field-label">{{ contentLanguageMessage }}</label>
+          <div class="dropdown" id="language-selector">
+            <button
+              ref="langButton"
+              class="btn btn-outline-secondary dropdown-toggle"
+              data-bs-toggle="dropdown"
+              @keydown="onLangMenuKeydown"
+              aria-haspopup="true"
+              aria-labelledby="content-language-label"
+              <template v-if="languageStrings">{{ languageStrings[selectedLanguage] }}</template>
+              <i class="chevron fa-solid fa-chevron-down"></i>
+            </button>
 
-          <ul
-            ref="langMenu"
-            id="language-list"
-            class="dropdown-menu"
-            role="menu">
-            <li
-              v-for="(value, key, index) in languageStrings"
-              :key="key"
-              role="menuitemradio"
-              :aria-checked="selectedLanguage === key"
-              :tabindex="focusedLangIndex === index ? 0 : -1"
-              @click="changeContentLangAndReload(key)"
-              @focus="focusedLangIndex = index"
-              class="dropdown-item">
-              {{ value }}
-            </li>
-          </ul>
+            <ul
+              ref="langMenu"
+              id="language-list"
+              class="dropdown-menu"
+              role="menu">
+              <li
+                v-for="(value, key, index) in languageStrings"
+                :key="key"
+                role="menuitemradio"
+                :aria-checked="selectedLanguage === key"
+                :tabindex="focusedLangIndex === index ? 0 : -1"
+                @click="changeContentLangAndReload(key)"
+                @focus="focusedLangIndex = index"
+                class="dropdown-item">
+                {{ value }}
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <span id="headerbar-search" class="dropdown">
-          <input type="search"
-            ref="searchInputField"
-            class="form-control"
-            id="search-field"
-            autocomplete="off"
-            data-bs-toggle=""
-            :aria-label="searchFieldAriaMessage"
-            :placeholder="searchPlaceholder"
-            v-click-outside="hideAutoComplete"
-            v-model="searchTerm"
-            @input="autoComplete()"
-            @keyup.enter="gotoSearchPage()"
-            @click="showAutoComplete()">
-          <ul id="search-autocomplete-results"
-              class="dropdown-menu w-100"
-              :class="{ 'show': showAutoCompleteDropdown }"
-              aria-labelledby="search-field">
-            <li class="autocomplete-result container" v-for="result in renderedResultsList"
-              :key="result.prefLabel" >
-              <template v-if="result.pageUrl">
-                <a :href=result.pageUrl>
-                  <div class="row pb-1">
-                    <div class="col" v-if="result.hitType == 'hidden'">
-                      <span class="result">
-                        <template v-if="result.showNotation && result.notation">
-                          {{ result.notation }}&nbsp;
-                        </template>
-                        <template v-if="result.hit.hasOwnProperty('match')">
-                          {{ result.hit.before }}<b>{{ result.hit.match }}</b>{{ result.hit.after }}
-                        </template>
-                        <template v-else>
-                          {{ result.hit }}
-                        </template>
-                      </span>
-                    </div>
-                    <div class="col" v-else-if="result.hitType == 'alt'">
-                      <span>
-                        <i>
+        <div class="search-field-group">
+          <label for="search-field" class="search-field-label">{{ searchLabel }}</label>
+          <div id="headerbar-search" class="dropdown">
+            <input type="search"
+              ref="searchInputField"
+              class="form-control"
+              id="search-field"
+              autocomplete="off"
+              data-bs-toggle=""
+              v-click-outside="hideAutoComplete"
+              v-model="searchTerm"
+              @input="autoComplete()"
+              @keyup.enter="gotoSearchPage()"
+              @click="showAutoComplete()">
+            <ul id="search-autocomplete-results"
+                class="dropdown-menu w-100"
+                :class="{ 'show': showAutoCompleteDropdown }"
+                aria-labelledby="search-field">
+              <li class="autocomplete-result container" v-for="result in renderedResultsList"
+                :key="result.prefLabel" >
+                <template v-if="result.pageUrl">
+                  <a :href=result.pageUrl>
+                    <div class="row pb-1">
+                      <div class="col" v-if="result.hitType == 'hidden'">
+                        <span class="result">
                           <template v-if="result.showNotation && result.notation">
                             {{ result.notation }}&nbsp;
                           </template>
@@ -412,57 +398,75 @@ function startVocabSearchApp () {
                           <template v-else>
                             {{ result.hit }}
                           </template>
-                        </i>
-                      </span>
-                      <span> &rarr;&nbsp;<span class="result">
-                        <template v-if="result.showNotation && result.notation">
-                            {{ result.notation }}&nbsp;
-                          </template>
-                          <template v-if="result.hitPref.hasOwnProperty('match')">
-                            {{ result.hitPref.before }}<b>{{ result.hitPref.match }}</b>{{ result.hitPref.after }}
+                        </span>
+                      </div>
+                      <div class="col" v-else-if="result.hitType == 'alt'">
+                        <span>
+                          <i>
+                            <template v-if="result.showNotation && result.notation">
+                              {{ result.notation }}&nbsp;
+                            </template>
+                            <template v-if="result.hit.hasOwnProperty('match')">
+                              {{ result.hit.before }}<b>{{ result.hit.match }}</b>{{ result.hit.after }}
+                            </template>
+                            <template v-else>
+                              {{ result.hit }}
+                            </template>
+                          </i>
+                        </span>
+                        <span> &rarr;&nbsp;<span class="result">
+                          <template v-if="result.showNotation && result.notation">
+                              {{ result.notation }}&nbsp;
+                            </template>
+                            <template v-if="result.hitPref.hasOwnProperty('match')">
+                              {{ result.hitPref.before }}<b>{{ result.hitPref.match }}</b>{{ result.hitPref.after }}
+                            </template>
+                            <template v-else>
+                              {{ result.hitPref }}
+                            </template>
+                          </span>
+                        </span>
+                      </div>
+                      <div class="col" v-else-if="result.hitType == 'notation'">
+                        <span class="result">
+                          <template v-if="result.hit.hasOwnProperty('match')">
+                            {{ result.hit.before }}<b>{{ result.hit.match }}</b>{{ result.hit.after }}
                           </template>
                           <template v-else>
-                            {{ result.hitPref }}
+                            {{ result.hit }}
                           </template>
                         </span>
-                      </span>
+                        <span>
+                          {{ result.prefLabel }}
+                        </span>
+                      </div>
+                      <div class="col" v-else-if="result.hitType == 'pref'">
+                        <span class="result">
+                          <template v-if="result.showNotation && result.notation">
+                            {{ result.notation }}&nbsp;
+                          </template>
+                          <template v-if="result.hit.hasOwnProperty('match')">
+                            {{ result.hit.before }}<b>{{ result.hit.match }}</b>{{ result.hit.after }}
+                          </template>
+                          <template v-else>
+                            {{ result.hit }}
+                          </template>
+                        </span>
+                      </div>
+                      <div class="col-auto align-self-end pr-1" v-html="result.renderedType"></div>
                     </div>
-                    <div class="col" v-else-if="result.hitType == 'notation'">
-                      <span class="result">
-                        <template v-if="result.hit.hasOwnProperty('match')">
-                          {{ result.hit.before }}<b>{{ result.hit.match }}</b>{{ result.hit.after }}
-                        </template>
-                        <template v-else>
-                          {{ result.hit }}
-                        </template>
-                      </span>
-                      <span>
-                        {{ result.prefLabel }}
-                      </span>
-                    </div>
-                    <div class="col" v-else-if="result.hitType == 'pref'">
-                      <span class="result">
-                        <template v-if="result.showNotation && result.notation">
-                          {{ result.notation }}&nbsp;
-                        </template>
-                        <template v-if="result.hit.hasOwnProperty('match')">
-                          {{ result.hit.before }}<b>{{ result.hit.match }}</b>{{ result.hit.after }}
-                        </template>
-                        <template v-else>
-                          {{ result.hit }}
-                        </template>
-                      </span>
-                    </div>
-                    <div class="col-auto align-self-end pr-1" v-html="result.renderedType"></div>
-                  </div>
-                </a>
-              </template>
-              <template v-else>
-                {{ result.prefLabel }}
-              </template>
-            </li>
-          </ul>
-        </span>
+                  </a>
+                </template>
+                <template v-else>
+                  {{ result.prefLabel }}
+                </template>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+
         <button id="clear-button"
                 class="btn btn-danger"
                 type="clear"
