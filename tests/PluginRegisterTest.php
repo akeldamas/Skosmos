@@ -153,7 +153,7 @@ class PluginRegisterTest extends PHPUnit\Framework\TestCase
         $plugins = new PluginRegister();
         // test-plugin1 now has TWO callbacks - verify both are returned
         $this->assertEquals(
-            array('plugins/test-plugin1/callplugin1', 'plugins/test-plugin1/secondplugin'),
+            array('callplugin1', 'secondplugin'),
             $this->mockpr->getPluginCallbacks()['test-plugin1']
         );
         // test-plugin2 has NO callback entry - should be absent from results
