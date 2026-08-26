@@ -57,6 +57,13 @@ describe('Global search page', () => {
     cy.visit(`/en/search?clang=en&q=g&vocabs=yso`)
     // Check that there are 5 search results
     cy.get('#search-results').find('.search-result').should('have.length', 5)
+    // The scroll handler attaches via onTranslationReady(), which runs after the
+    // async translation fetch resolves. Wait for translations to be ready first so
+    // the listener is attached before we scroll; otherwise scrollTo happens with no
+    // listener present and never dispatches a 'scroll' event, so no request fires.
+    cy.window().then(win => new Promise(resolve => {
+      win.onTranslationReady(() => resolve())
+    }))
     // Scroll to bottom of page
     cy.scrollTo('bottom')
     // Check that there are 9 search results
