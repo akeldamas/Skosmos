@@ -215,7 +215,7 @@ function startHierarchyApp () {
             return
           }
           const data = await res.json()
-        
+
           // transform broaderTransitive to an array and sort it
           const bt = Object.values(data.broaderTransitive).sort((a, b) => this.compareConcepts(a, b))
           const parents = [] // queue of nodes in hierarchy tree with potential missing child nodes
