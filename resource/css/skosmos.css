@@ -261,10 +261,6 @@ header .container-fluid .row {
 
 /* --- Search bar --- */
 
-#search-wrapper input, #search-wrapper button {
-  height: 100%;
-}
-
 /* Dropdowns */
 
 #language-list, #vocab-list {
@@ -344,7 +340,12 @@ header .container-fluid .row {
   flex-direction: column;
 }
 
+.search-field-group > .dropdown .btn, .search-field-group input {
+  height: 2.8rem !important;
+}
+
 .search-field-label {
+  margin-left: 0.2em;
   white-space: nowrap;
   color: var(--muted-color);
 }
@@ -411,6 +412,7 @@ header .container-fluid .row {
   border-radius: 0;
   padding: 0;
   width: 44px;
+  height: 2.8rem;
 }
 
 /* --- Global search bar --- */
