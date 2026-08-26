@@ -339,7 +339,7 @@ function startVocabSearchApp () {
               data-bs-toggle="dropdown"
               @keydown="onLangMenuKeydown"
               aria-haspopup="true"
-              aria-labelledby="content-language-label"
+              aria-labelledby="content-language-label">
               <template v-if="languageStrings">{{ languageStrings[selectedLanguage] }}</template>
               <i class="chevron fa-solid fa-chevron-down"></i>
             </button>
