@@ -51,64 +51,76 @@ function startHierarchyApp () {
           this.loadTopConcepts()
         }
       },
-      loadTopConcepts () {
+      async loadTopConcepts () {
         this.loadingHierarchy = true
         if (window.SKOSMOS.showConceptSchemesInHierarchy) {
           // if concept schemes are shown in hierarchy, fetch them from API and set them as top concepts in hierarchy
           const params = new URLSearchParams({ lang: window.SKOSMOS.content_lang })
-          fetch(`rest/v1/${window.SKOSMOS.vocab}/?${params}`)
-            .then(data => {
-              return data.json()
-            })
-            .then(data => {
-              this.hierarchy = []
-
-              for (const c of data.conceptschemes.sort((a, b) => this.compareConcepts(a, b))) {
-                this.hierarchy.push({ uri: c.uri, label: c.title || c.label, hasChildren: true, children: [], isOpen: false, notation: undefined, isScheme: true })
-              }
-
-              this.addIndicesToHierarchy()
+          try {
+            const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/?${params}`)
+            if (!res.ok) {
               this.loadingHierarchy = false
-            })
+              return
+            }
+            const data = await res.json()
+            this.hierarchy = []
+
+            for (const c of data.conceptschemes.sort((a, b) => this.compareConcepts(a, b))) {
+              this.hierarchy.push({ uri: c.uri, label: c.title || c.label, hasChildren: true, children: [], isOpen: false, notation: undefined, isScheme: true })
+            }
+          } catch (e) {
+            console.error(e)
+          } finally {
+            this.addIndicesToHierarchy()
+            this.loadingHierarchy = false
+          }
         } else {
           // otherwise, fetch top concepts
           const params = new URLSearchParams({ lang: window.SKOSMOS.content_lang })
-          fetch(`rest/v1/${window.SKOSMOS.vocab}/topConcepts/?${params}`)
-            .then(data => {
-              return data.json()
-            })
-            .then(data => {
-              this.hierarchy = []
-
-              for (const c of data.topconcepts.sort((a, b) => this.compareConcepts(a, b))) {
-                this.hierarchy.push(this.createConceptNode(c))
-              }
-
-              this.addIndicesToHierarchy()
+          try {
+            const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/topConcepts/?${params}`)
+            if (!res.ok) {
               this.loadingHierarchy = false
-            })
+              return
+            }
+            const data = await res.json()
+            this.hierarchy = []
+
+            for (const c of data.topconcepts.sort((a, b) => this.compareConcepts(a, b))) {
+              this.hierarchy.push(this.createConceptNode(c))
+            }
+          } catch (e) {
+            console.error(e)
+          } finally {
+            this.addIndicesToHierarchy()
+            this.loadingHierarchy = false
+          }
         }
       },
       async loadConceptHierarchy () {
         this.loadingHierarchy = true
         this.hierarchy = []
 
-        // if concept schemes are shown in hierarchy, add them to the root of the hierarchy tree
-        if (window.SKOSMOS.showConceptSchemesInHierarchy) {
-          await this.loadConceptSchemes()
-        }
+        try {
+          // if concept schemes are shown in hierarchy, add them to the root of the hierarchy tree
+          if (window.SKOSMOS.showConceptSchemesInHierarchy) {
+            await this.loadConceptSchemes()
+          }
 
-        if (this.hierarchy.some(s => s.uri === window.SKOSMOS.uri)) {
-          // if we are on a page for a concept scheme, fetch its top concepts
-          await this.loadTopConceptsForConceptScheme()
-        } else {
-          // otherwise, fetch hierarchy tree for selected concept
-          await this.loadHierarchyForConcept()
+          if (this.hierarchy.some(s => s.uri === window.SKOSMOS.uri)) {
+            // if we are on a page for a concept scheme, fetch its top concepts
+            await this.loadTopConceptsForConceptScheme()
+          } else {
+            // otherwise, fetch hierarchy tree for selected concept
+            await this.loadHierarchyForConcept()
+          }
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.loadingHierarchy = false
+          this.addIndicesToHierarchy()
+          this.selectedConcept = window.SKOSMOS.uri
         }
-
-        this.loadingHierarchy = false
-        this.addIndicesToHierarchy()
-        this.selectedConcept = window.SKOSMOS.uri
       },
       loadChildren (concept) {
         // load children only if concept has children but they have not been loaded yet
@@ -157,6 +169,9 @@ function startHierarchyApp () {
       async loadConceptSchemes () {
         const params = new URLSearchParams({ lang: window.SKOSMOS.content_lang })
         const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/?${params}`)
+        if (!res.ok) {
+          return
+        }
         const data = await res.json()
 
         for (const s of data.conceptschemes.sort((a, b) => this.compareConcepts(a, b))) {
@@ -170,6 +185,9 @@ function startHierarchyApp () {
           lang: window.SKOSMOS.content_lang
         })
         const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/topConcepts?${params}`)
+        if (!res.ok) {
+          return
+        }
         const data = await res.json()
 
         // find selected scheme in hierarchy
@@ -185,6 +203,9 @@ function startHierarchyApp () {
           lang: window.SKOSMOS.content_lang
         })
         const res = await fetch(`rest/v1/${window.SKOSMOS.vocab}/hierarchy/?${params}`)
+        if (!res.ok) {
+          return
+        }
         const data = await res.json()
 
         // transform broaderTransitive to an array and sort it
@@ -460,7 +481,7 @@ function startHierarchyApp () {
         const list = document.querySelector('#hierarchy-list')
 
         // distances to the top of the page
-        const selectedTop = selected.getBoundingClientRect().top
+        const selectedTop = selected?.getBoundingClientRect().top
         const listTop = list.getBoundingClientRect().top
 
         // height of the visible portion of the list element
