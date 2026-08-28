@@ -296,8 +296,8 @@ header .container-fluid .row {
   color: var(--headerbar-text);
 }
 
-#search-wrapper .dropdown-menu li label:hover, #search-wrapper .dropdown-menu li:hover {
-  color: var(--search-dropdown-hover-text);
+#search-wrapper .dropdown-menu li label:hover, #search-wrapper .dropdown-menu #li:hover {
+  color: var(--search-dropdown-hover-text) !important;
 }
 
 #search-wrapper .dropdown-menu li:focus-visible {
