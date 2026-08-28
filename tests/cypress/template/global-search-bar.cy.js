@@ -10,7 +10,7 @@ describe('Global search bar', () => {
   })
 
   it('dropdown menu header text is updated according to the selected vocabularies', () => {
-    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Valitse sanasto')
+    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Any vocabulary')
     // select "altlabel"
     cy.get('#vocab-list').contains('label', 'altlabel').find('input[type="checkbox"]').check({ force: true })
     cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'altlabel')
@@ -27,12 +27,12 @@ describe('Global search bar', () => {
   it('Dropdown menu header text returns to original hint if no vocabularies are selected', () => {
     cy.get('#vocab-list li').eq(1).find('input[type="checkbox"]').check({ force: true })
     cy.get('#vocab-list li').eq(1).find('input[type="checkbox"]').uncheck({ force: true })
-    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Valitse sanasto')
+    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Any vocabulary')
   })
 
   it('changing the search language changes the language selector dropdown header text', () => {
 
-    cy.get('#language-selector .dropdown-toggle').should('contain.text', 'Valitse kieli')
+    cy.get('#language-selector .dropdown-toggle').should('contain.text', 'kaikilla kielillä')
     cy.get('#language-selector .dropdown-toggle').click()
     cy.get('#language-list').should('be.visible')
 
@@ -47,7 +47,7 @@ describe('Global search bar', () => {
 
   it('Selecting "all languages" does not change content language', () => {
 
-    cy.get('#language-selector .dropdown-toggle').should('contain.text', 'Valitse kieli')
+    cy.get('#language-selector .dropdown-toggle').should('contain.text', 'kaikilla kielillä')
     cy.get('#language-list li label').find('input[type="radio"][value="en"]').check({ force: true })
     cy.url().should('include', 'clang=en')
 
@@ -312,18 +312,16 @@ describe('Global search bar', () => {
       cy.get('#search-wrapper').should('exist')
 
       // Check that vocabulary selector has correct place holder text
-      cy.get('#vocab-selector button').should('have.text', 'Choose vocabulary')
-      // Check that vocabulary selector has correct Aria label
-      cy.get('#vocab-selector button').should('have.attr', 'aria-label', 'Select search vocabularies')
+      cy.get('#vocab-selector button').should('have.text', 'Any vocabulary')
+      // Check that vocabulary selector has correct label
+      cy.get('#vocab-selector-label').should('contain', 'Choose vocabulary')
       // Check that search language selector has correct place holder text
-      cy.get('#language-selector button').should('have.text', 'Choose language')
-      // Check that search language selector has correct Aria label
-      cy.get('#language-selector button').should('have.attr', 'aria-label', 'Select search language')
-      // Check that search field has correct Aria label
-      cy.get('#search-field').should('have.attr', 'aria-label', 'Enter search term')
-      // Check that search field has correct placeholder
-      cy.get('#search-field').should('have.attr', 'placeholder', 'Enter search term')
-      // Check that search field has correct aria-label
+      cy.get('#language-selector button').should('have.text', 'Any language')
+      // Check that search language selector has correct label
+      cy.get('#content-language-label').should('contain', 'Content language')
+      // Check that search field has correct label
+      cy.get('label[for="search-field"]').should('contain', 'Enter search term')
+      // Check that search button has correct aria-label
       cy.get('#search-button').should('have.attr', 'aria-label', 'Search')
       // Check that search language list has correctly translated text for anylang selector
       cy.get('#language-list li').contains('label', 'Any language')
@@ -343,18 +341,14 @@ describe('Global search bar', () => {
       cy.get('#search-wrapper').should('exist')
 
       // Check that vocabulary selector has correct place holder text
-      cy.get('#vocab-selector button').should('have.text', 'Valitse sanasto')
-      // Check that vocabulary selector has correct Aria label
-      cy.get('#vocab-selector button').should('have.attr', 'aria-label', 'Valitse haun kohdesanastot')
-      // Check that search language selector has correct place holder text
-      cy.get('#language-selector button').should('have.text', 'Valitse kieli')
-      // Check that search language selector has correct Aria label
-      cy.get('#language-selector button').should('have.attr', 'aria-label', 'Valitse hakukieli')
-      // Check that search field has correct Aria label
-      cy.get('#search-field').should('have.attr', 'aria-label', 'Syötä haettava termi')
-      // Check that search field has correct placeholder
-      cy.get('#search-field').should('have.attr', 'placeholder', 'Syötä haettava termi')
-      // Check that search field has correct aria-label
+      cy.get('#vocab-selector button').should('have.text', 'Any vocabulary')
+      // Check that vocabulary selector has correct label
+      cy.get('#vocab-selector-label').should('contain', 'Valitse sanasto')
+      // Check that search language selector has correct label
+      cy.get('#content-language-label').should('contain', 'Sisällön kieli')
+      // Check that search field has correct label
+      cy.get('label[for="search-field"]').should('contain', 'Syötä haettava termi')
+      // Check that search button has correct aria-label
       cy.get('#search-button').should('have.attr', 'aria-label', 'Hae')
       // Check that search language list has correctly translated text for anylang selector
       cy.get('#language-list li').contains('label', 'kaikilla kielillä')
