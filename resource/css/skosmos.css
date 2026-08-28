@@ -309,8 +309,9 @@ header .container-fluid .row {
   background-color: var(--search-field-bg);
   border: 1px solid var(--search-border);
   border-radius: 0;
-  padding-left: 1rem;
+  padding-left: calc(0.75rem - 1px);
   padding-right: 2.5rem;
+  text-align: left;
 }
 
 #search-wrapper .dropdown-toggle:hover, #search-wrapper .dropdown-toggle.show {
@@ -345,7 +346,7 @@ header .container-fluid .row {
 }
 
 .search-field-label {
-  margin-left: 0.2em;
+  margin-left: 0.75rem;
   white-space: nowrap;
   color: var(--muted-color);
 }
@@ -379,7 +380,7 @@ header .container-fluid .row {
   color: var(--headerbar-text);
   background: none;
   border: none;
-  top: 0;
+  bottom: 2px;
   right: 50px;
   height: 40px;
   width: 40px;
@@ -489,6 +490,10 @@ header .container-fluid .row {
 
 #search-wrapper #language-selector .dropdown-menu {
   --bs-dropdown-link-active-bg: var(--search-dropdown-selected-bg);
+}
+
+#search-wrapper #language-selector .dropdown-item {
+  padding: 0.25rem 0.75rem;
 }
 
 #search-wrapper #language-selector .dropdown-item:active {
