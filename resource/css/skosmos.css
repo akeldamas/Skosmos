@@ -494,6 +494,7 @@ header .container-fluid .row {
 
 #search-wrapper #language-selector .dropdown-item {
   padding: 0.25rem 0.75rem;
+  color: var(--headerbar-text);
 }
 
 #search-wrapper #language-selector .dropdown-item:active {
