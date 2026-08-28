@@ -311,7 +311,7 @@ function startGlobalSearchApp () {
           case 'Enter': {
             e.preventDefault()
             items[currentIndex].parentElement.click()
-            const btn = e.currentTarget.closest("dropdown").querySelector('.dropdown-toggle')
+            const btn = e.delegateTarget.parentElement.querySelector('.dropdown-toggle')
             btn.focus()
             break
           }
