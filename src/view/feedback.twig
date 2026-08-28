@@ -14,7 +14,10 @@
   {% else %}
 
     <h1 class="mb-5">{{ 'Contact us!' | trans}}</h1>
-    <p class="fs-5 mb-5">{{ 'feedback_enter_name_email' | trans }}</p>
+    <div class="fs-5 mb-5">
+      <p>{{ 'feedback_enter_name_email' | trans }}</p>
+      {{ include('custom-templates.inc.twig', {slotName: 'feedback'}) }}
+    </div>
     
     <form id="feedback-form" method="post" action="{% if request.vocab %}{{request.vocab.id}}/{% endif %}{{ request.lang }}/feedback">
       <div class="mb-4">
