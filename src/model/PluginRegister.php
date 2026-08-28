@@ -74,13 +74,14 @@ class PluginRegister
     /**
      * Returns the plugin configurations found from plugin folders
      * inside the plugins folder filtered by plugin name (the folder name).
-     * @param string $type filetype e.g. 'css' or 'js'
+     * @param string $type filetype e.g. 'css', 'js', or 'callback'
      * @param array $names the plugin name strings (foldernames) in an array
+     * @param bool $raw if true, returns raw values without prefixing file paths
      * @return array
      */
-    private function filterPluginsByName($type, $names)
+    private function filterPluginsByName($type, $names, $raw = false)
     {
-        $files = $this->filterPlugins($type);
+        $files = $this->filterPlugins($type, $raw);
         foreach ($files as $plugin => $filelist) {
             if (!in_array($plugin, $names)) {
                 unset($files[$plugin]);
@@ -126,9 +127,9 @@ class PluginRegister
     {
         if ($names) {
             $names = array_merge($this->requestedPlugins, $names);
-            return $this->filterPluginsByName('callback', $names);
+            return $this->filterPluginsByName('callback', $names, true);
         }
-        return $this->filterPluginsByName('callback', $this->requestedPlugins);
+        return $this->filterPluginsByName('callback', $this->requestedPlugins, true);
     }
 
     /**
@@ -139,17 +140,14 @@ class PluginRegister
     public function getCallbacks()
     {
         $ret = array();
-        $sortedCallbacks = array();
         $plugins = $this->getPluginCallbacks($this->requestedPlugins);
-        foreach ($plugins as $callbacks) {
-            foreach ($callbacks as $callback) {
-                $split = explode('/', $callback);
-                $sortedCallbacks[$split[1]] = $split[2];
+        // Collect callbacks in plugin order, preserving all callbacks per plugin
+        foreach ($this->requestedPlugins as $pluginName) {
+            if (isset($plugins[$pluginName])) {
+                foreach ($plugins[$pluginName] as $callback) {
+                    $ret[] = $callback;
+                }
             }
-        }
-        $sortedCallbacks = array_replace($this->pluginOrder, $sortedCallbacks);
-        foreach ($sortedCallbacks as $callback) {
-            $ret[] = $callback;
         }
         return $ret;
     }
