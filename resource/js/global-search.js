@@ -401,7 +401,7 @@ function startGlobalSearchApp () {
           }
 
           case 'ArrowLeft': {
-            const previousEl = dropDownList.previousSibling
+            const previousEl = dropDownList.parentNode.previousSibling
             if (previousEl) {
               const button = previousEl.querySelector('button')
               if (button) button.focus()
@@ -409,7 +409,7 @@ function startGlobalSearchApp () {
             break
           }
           case 'ArrowRight': {
-            const nextEl = dropDownList.nextSibling
+            const nextEl = dropDownList.parentNode.nextSibling
             if (nextEl) {
               const button = nextEl.querySelector('button')
               if (button) button.focus()
