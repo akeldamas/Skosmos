@@ -10,7 +10,7 @@ describe('Global search bar', () => {
   })
 
   it('dropdown menu header text is updated according to the selected vocabularies', () => {
-    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Any vocabulary')
+    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Kaikista sanastoista')
     // select "altlabel"
     cy.get('#vocab-list').contains('label', 'altlabel').find('input[type="checkbox"]').check({ force: true })
     cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'altlabel')
@@ -27,7 +27,7 @@ describe('Global search bar', () => {
   it('Dropdown menu header text returns to original hint if no vocabularies are selected', () => {
     cy.get('#vocab-list li').eq(1).find('input[type="checkbox"]').check({ force: true })
     cy.get('#vocab-list li').eq(1).find('input[type="checkbox"]').uncheck({ force: true })
-    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Any vocabulary')
+    cy.get('#vocab-selector .vocab-dropdown-btn').should('contain.text', 'Kaikista sanastoista')
   })
 
   it('changing the search language changes the language selector dropdown header text', () => {
@@ -341,7 +341,7 @@ describe('Global search bar', () => {
       cy.get('#search-wrapper').should('exist')
 
       // Check that vocabulary selector has correct place holder text
-      cy.get('#vocab-selector button').should('have.text', 'Any vocabulary')
+      cy.get('#vocab-selector button').should('have.text', 'Kaikista sanastoista')
       // Check that vocabulary selector has correct label
       cy.get('#vocab-selector-label').should('contain', 'Valitse sanasto')
       // Check that search language selector has correct label
