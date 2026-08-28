@@ -327,7 +327,7 @@ function startGlobalSearchApp () {
             e.preventDefault()
             if (currentIndex < 0) return
             items[currentIndex].click()
-            const btn = e.currentTarget.closest("dropdown").querySelector('.dropdown-toggle')
+            const btn = e.currentTarget.closest('dropdown').querySelector('.dropdown-toggle')
             bootstrap.Dropdown.getOrCreateInstance(btn).hide()
             btn.focus()
             break
