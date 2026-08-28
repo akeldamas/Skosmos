@@ -260,7 +260,7 @@ function startVocabSearchApp () {
         this.$forceUpdate()
       },
       onLangMenuKeydown (event) {
-        const items = this.$refs.langMenu.querySelectorAll('[role="menuitemradio"]')
+        const items = this.$refs.langMenu.querySelectorAll('[role="radio"]')
         switch (event.key) {
           case 'ArrowDown': {
             event.preventDefault()
@@ -331,28 +331,33 @@ function startVocabSearchApp () {
       <div class="input-group ps-xl-2 flex-nowrap" id="search-wrapper">
 
         <div class="search-field-group">
-          <label id="content-language-label" class="search-field-label">{{ contentLanguageMessage }}</label>
+          <span id="content-language-label" class="search-field-label">{{ contentLanguageMessage }}</span>
           <div class="dropdown" id="language-selector">
             <button
+              type="button"
               ref="langButton"
               class="btn btn-outline-secondary dropdown-toggle"
               data-bs-toggle="dropdown"
               @keydown="onLangMenuKeydown"
-              aria-haspopup="true"
-              aria-labelledby="content-language-label">
-              <template v-if="languageStrings">{{ languageStrings[selectedLanguage] }}</template>
-              <i class="chevron fa-solid fa-chevron-down"></i>
+              aria-expanded="false"
+              aria-controls="language-list"
+              aria-labelledby="content-language-label content-language-current">
+              <span id="content-language-current" v-if="selectedLanguage && languageStrings[selectedLanguage]">
+                {{ languageStrings[selectedLanguage] }}
+              </span>
+              <i class="chevron fa-solid fa-chevron-down" aria-hidden="true"></i>
             </button>
 
             <ul
               ref="langMenu"
               id="language-list"
               class="dropdown-menu"
-              role="menu">
+              role="radiogroup"
+              aria-labelledby="content-language-label">
               <li
                 v-for="(value, key, index) in languageStrings"
                 :key="key"
-                role="menuitemradio"
+                role="radio"
                 :aria-checked="selectedLanguage === key"
                 :tabindex="focusedLangIndex === index ? 0 : -1"
                 @click="changeContentLangAndReload(key)"

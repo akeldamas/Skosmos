@@ -263,7 +263,6 @@ function startGlobalSearchApp () {
         window.location.href = searchUrl
       },
       changeLang (clang) {
-        this.selectedLanguage = clang
         this.resetSearchTermAndHideDropdown()
       },
       resetSearchTermAndHideDropdown () {
@@ -312,7 +311,7 @@ function startGlobalSearchApp () {
           case 'Enter': {
             e.preventDefault()
             items[currentIndex].parentElement.click()
-            const btn = e.delegateTarget.parentElement.querySelector('.dropdown-toggle')
+            const btn = e.currentTarget.closest("dropdown").querySelector('.dropdown-toggle')
             btn.focus()
             break
           }
@@ -326,9 +325,10 @@ function startGlobalSearchApp () {
             break
           case 'Escape': {
             e.preventDefault()
-            const btn = e.delegateTarget.parentElement.querySelector('.dropdown-toggle')
-            const dropdownBtn = bootstrap.Dropdown.getInstance(btn)
-            dropdownBtn.toggle()
+            if (currentIndex < 0) return
+            items[currentIndex].click()
+            const btn = e.currentTarget.closest("dropdown").querySelector('.dropdown-toggle')
+            bootstrap.Dropdown.getOrCreateInstance(btn).hide()
             btn.focus()
             break
           }
@@ -433,29 +433,29 @@ function startGlobalSearchApp () {
     template: `
       <div id="search-wrapper" class="input-group ps-xl-2 flex-nowrap">
         <div class="search-field-group">
-          <label id="vocab-selector-label" class="search-field-label">{{ vocabSelectorLabel }}</label>
+          <span id="vocab-selector-label" class="search-field-label">{{ vocabSelectorLabel }}</span>
           <div class="dropdown" id="vocab-selector">
             <button
+              type="button"
               class="btn btn-outline-secondary dropdown-toggle vocab-dropdown-btn"
-              role="button"
               data-bs-toggle="dropdown"
               data-bs-auto-close="outside"
               aria-expanded="false"
-              aria-labelledby="vocab-selector-label"
+              aria-controls="vocab-list"
+              aria-labelledby="vocab-selector-label vocab-selector-current"
               v-if="languageStrings"
               v-key-nav="dropdownKeyNav"
             >
-              <span v-if="selectedVocabsString">{{ selectedVocabsString }}</span>
-              <span v-else>{{ anyVocabulary }}</span>
-              <i class="chevron fa-solid fa-chevron-down"></i>
+              <span id="vocab-selector-current" v-if="selectedVocabsString">{{ selectedVocabsString }}</span>
+              <span id="vocab-selector-current" v-else>{{ anyVocabulary }}</span>
+              <i class="chevron fa-solid fa-chevron-down" aria-hidden="true"></i>
             </button>
             <ul
               class="dropdown-menu"
               @keydown="onVocabMenuKeydown"
               id="vocab-list"
-              role="menu">
-              <li v-for="(value, key) in vocabStrings" :key="key"
-              role="none" tabindex=-1>
+              aria-labelledby="vocab-selector-label">
+              <li v-for="(value, key) in vocabStrings" :key="key" tabindex=-1>
                 <label class="dropdown-item vocab-select">
                   <input
                     type="checkbox"
@@ -463,7 +463,7 @@ function startGlobalSearchApp () {
                     v-model="selectedVocabs"
                     tabindex=-1
                     @click.stop>
-                    <span class="checkmark"></span>
+                    <span class="checkmark" aria-hidden="true"></span>
                   {{ value }}
                 </label>
               </li>
@@ -472,33 +472,37 @@ function startGlobalSearchApp () {
         </div>
 
         <div class="search-field-group">
-          <label id="content-language-label" class="search-field-label">{{ langSelectorLabel }}</label>
+          <span id="content-language-label" class="search-field-label">{{ langSelectorLabel }}</span>
           <div class="dropdown" id="language-selector">
             <button
+              type="button"
               class="btn btn-outline-secondary dropdown-toggle"
-              role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
-              aria-labelledby="content-language-label"
+              aria-controls="language-list"
+              aria-labelledby="content-language-label content-language-current"
               v-key-nav="dropdownKeyNav"
               v-if="languageStrings">
-                <span v-if="selectedLanguage && languageStrings[selectedLanguage]">
+                <span id="content-language-current" v-if="selectedLanguage && languageStrings[selectedLanguage]">
                   {{ languageStrings[selectedLanguage] }}
                 </span>
-                <span v-else>{{ anyLanguage }}</span>
-              <i class="chevron fa-solid fa-chevron-down"></i>
+                <span id="content-language-current" v-else>{{ anyLanguage }}</span>
+              <i class="chevron fa-solid fa-chevron-down" aria-hidden="true"></i>
             </button>
             <ul
               class="dropdown-menu"
               @keydown="onLangMenuKeydown"
               id="language-list"
-              role="menu">
-              <li v-for="(value, key) in languageStrings" :key="key" role="none" tabindex=-1>
+              role="radiogroup"
+              aria-labelledby="content-language-label">
+              <li v-for="(value, key) in languageStrings" :key="key" tabindex=-1>
                 <label class="dropdown-item">
                   <input
                     type="radio"
+                    name="content-language"
                     :value="key"
                     tabindex=-1
+                    @change="changeLang(key)"
                     @keydown.left.prevent
                     @keydown.right.prevent
                     @click.stop
