@@ -297,7 +297,7 @@ header .container-fluid .row {
 }
 
 #search-wrapper .dropdown-menu li label:hover, #search-wrapper .dropdown-menu #li:hover {
-  color: var(--search-dropdown-hover-text) !important;
+  color: var(--search-dropdown-hover-text);
 }
 
 #search-wrapper .dropdown-menu li:focus-visible {
@@ -353,8 +353,9 @@ header .container-fluid .row {
 
 /* Language selector  */
 
-#language-list li:hover, #language-list li:active {
+#language-list li:hover, #language-list li:active, #language-list li:hover label, #language-list li:active label {
   background-color: var(--search-dropdown-hover-bg);
+  color: var(--search-dropdown-hover-text) !important;
 }
 
 /* Search field */
