@@ -1,7 +1,6 @@
 {
     "all languages": "toutes les langues",
     "all vocabularies": "partout",
-    "Any vocabulary": "Partout",
     "%search_count% results for '%term%'": "%search_count% r\u00e9sultat(s) pour '%term%'",
     "404 Error: The page %requested_page% cannot be found.": "Erreur 404 : La page %requested_page% n'existe pas.",
     "A-Z": "A-Z",
@@ -11,7 +10,6 @@
     "Alpha-nav": "Liste",
     "Alphabetical index": "Index alphab\u00e9tique",
     "Alternate terms": "Termes synonymes",
-    "Any language": "Toutes les langues",
     "By group": "Par groupe",
     "By parent": "Par parent",
     "By scheme": "Par sous-vocabulaire",

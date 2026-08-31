@@ -1,7 +1,6 @@
 {
     "all languages": "kaikki kielet",
     "all vocabularies": "kaikki sanastot",
-    "Any vocabulary": "Kaikista sanastoista",
     "Concepts loaded for letter %letter%": "K\u00e4sitteet ladattu kirjaimelle %letter%",
     "Browse concepts": "Selaa k\u00e4sitteit\u00e4",
     "Choose language": "Valitse kieli",
@@ -27,7 +26,6 @@
     "Alpha-nav": "Aakkosellinen",
     "Alphabetical index": "Aakkosellinen hakemisto",
     "Alternate terms": "Ohjaustermit",
-    "Any language": "kaikilla kielill\u00e4",
     "Available vocabularies and ontologies": "Sanastot ja ontologiat",
     "Breadcrumbs": "Murupolut",
     "By group": "Ryhm\u00e4n mukaan",
