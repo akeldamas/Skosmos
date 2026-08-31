@@ -1,5 +1,6 @@
 {
-    "Any vocabulary": "Da tutti",
+    "all languages": "qualsiasi lingua",
+    "all vocabularies": "da tutti",
     "%search_count% results for '%term%'": "%search_count% risultati per '%term%'",
     "404 Error: The page %requested_page% cannot be found.": "Errore 404: La pagina %requested_page% non pu\u00f2 essere trovata.",
     "A-Z": "A-Z",
@@ -9,7 +10,6 @@
     "Alpha-nav": "Ordine Alfabetico",
     "Alphabetical index": "Indice alfabetico",
     "Alternate terms": "Termini alternativi",
-    "Any language": "Qualsiasi lingua",
     "By group": "Per gruppo",
     "By parent": "per concetto padre",
     "By scheme": "Per sottovocabolario",

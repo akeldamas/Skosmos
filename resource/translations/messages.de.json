@@ -1,5 +1,6 @@
 {
-    "Any vocabulary": "In allen Vokabularen",
+    "all languages": "Suche in allen Sprachen",
+    "all vocabularies": "In allen Vokabularen",
     "%search_count% results for '%term%'": "%search_count% Ergebnisse f\u00fcr '%term%'",
     "404 Error: The page %requested_page% cannot be found.": "Fehler 404: Die angeforderte Seite %requested_page% wurde nicht gefunden.",
     "A-Z": "A-Z",
@@ -9,7 +10,6 @@
     "Alpha-nav": "Alphabetisch",
     "Alphabetical index": "Alphabetische Auflistung",
     "Alternate terms": "Synonyme",
-    "Any language": "Suche in allen Sprachen",
     "Available vocabularies and ontologies": "Vorhandene Vokabulare und Ontologien",
     "By group": "Nach Gruppe",
     "By parent": "Nach Elternelement",

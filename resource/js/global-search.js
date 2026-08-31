@@ -27,11 +27,11 @@ function startGlobalSearchApp () {
       searchLabel () {
         return $t('Enter search term')
       },
-      anyVocabulary () {
-        return $t('Any vocabulary')
+      allVocabularies () {
+        return $t('all vocabularies')
       },
-      anyLanguage () {
-        return $t('Any language')
+      allLanguages () {
+        return $t('all languages')
       },
       noResults () {
         return $t('No results')
@@ -112,8 +112,8 @@ function startGlobalSearchApp () {
       },
       formatLanguages () {
         const languages = window.SKOSMOS.contentLanguages
-        const anyLanguageEntry = { all: this.anyLanguage }
-        return { ...languages, ...anyLanguageEntry }
+        const allLanguagesEntry = { all: this.allLanguages }
+        return { ...languages, ...allLanguagesEntry }
       },
       formatSearchUrlParams () {
         const params = new URLSearchParams({ q: this.searchTerm })
@@ -447,7 +447,7 @@ function startGlobalSearchApp () {
               v-key-nav="dropdownKeyNav"
             >
               <span id="vocab-selector-current" v-if="selectedVocabsString">{{ selectedVocabsString }}</span>
-              <span id="vocab-selector-current" v-else>{{ anyVocabulary }}</span>
+              <span id="vocab-selector-current" v-else>{{ allVocabularies }}</span>
               <i class="chevron fa-solid fa-chevron-down" aria-hidden="true"></i>
             </button>
             <ul
@@ -486,7 +486,7 @@ function startGlobalSearchApp () {
                 <span id="content-language-current" v-if="selectedLanguage && languageStrings[selectedLanguage]">
                   {{ languageStrings[selectedLanguage] }}
                 </span>
-                <span id="content-language-current" v-else>{{ anyLanguage }}</span>
+                <span id="content-language-current" v-else>{{ allLanguages }}</span>
               <i class="chevron fa-solid fa-chevron-down" aria-hidden="true"></i>
             </button>
             <ul

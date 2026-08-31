@@ -25,7 +25,7 @@ describe('Vocab search bar', () => {
 
       // Choose 'all' languages from the dropdown
       cy.get('#language-selector button').click();
-      cy.get('#language-selector .dropdown-item').contains('kaikilla kielillä').click();
+      cy.get('#language-selector .dropdown-item').contains('kaikki kielet').click();
 
       // Enter a search term
       cy.get('#search-wrapper input').type('Katt');
@@ -52,7 +52,7 @@ describe('Vocab search bar', () => {
 
       // Choose 'all' for search language
       cy.get('#language-selector button').click();
-      cy.get('#language-selector .dropdown-item').contains('kaikilla kielillä').click();
+      cy.get('#language-selector .dropdown-item').contains('kaikki kielet').click();
 
       // Verify the search page url has the previously chosen language as the content language
       cy.url().should('include', 'clang=sv');
@@ -71,7 +71,7 @@ describe('Vocab search bar', () => {
         cy.get('#language-selector .dropdown-item').then($elements => {
           const actualLanguages = $elements.map((index, el) => Cypress.$(el).text()).get();
 
-          const expectedLanguages = ['Finnish','English','Northern Sami','Swedish','Any language'];
+          const expectedLanguages = ['Finnish','English','Northern Sami','Swedish','all languages'];
           expect(expectedLanguages).to.have.lengthOf(actualLanguages.length);
           expectedLanguages.forEach(lang => { expect(actualLanguages).to.include(lang); });
         })

@@ -1,5 +1,6 @@
 {
-    "Any vocabulary": "Wszystkie",
+    "all languages": "dowolny j\u0119zyk",
+    "all vocabularies": "wszystkie",
     "%search_count% results for '%term%'": "%search_count% wynik\u00f3w dla '%term%'",
     "404 Error: The page %requested_page% cannot be found.": "B\u0142\u0105d 404: Strona %requested_page% nieodnaleziona.",
     "A-Z": "A-Z",
@@ -9,7 +10,6 @@
     "Alpha-nav": "Alfabetycznie",
     "Alphabetical index": "Indeks alfabetyczny",
     "Alternate terms": "Alternatywne terminy",
-    "Any language": "Dowolny j\u0119zyk",
     "By group": "Wed\u0142ug grupy",
     "By parent": "Wed\u0142ug rodzica",
     "By scheme": "Wed\u0142ug pods\u0142ownictwa",

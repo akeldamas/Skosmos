@@ -16,8 +16,8 @@ function startVocabSearchApp () {
       }
     },
     computed: {
-      anyLanguages () {
-        return $t('Any language')
+      allLanguages () {
+        return $t('all languages')
       },
       noResults () {
         return $t('No results')
@@ -93,8 +93,8 @@ function startVocabSearchApp () {
       },
       formatLanguages () {
         const languages = window.SKOSMOS.contentLanguages
-        const anyLanguagesEntry = { all: this.anyLanguages }
-        return { ...languages, ...anyLanguagesEntry }
+        const allLanguagesEntry = { all: this.allLanguages }
+        return { ...languages, ...allLanguagesEntry }
       },
       formatSearchTerm () {
         if (this.searchTerm.includes('*')) { return this.searchTerm }

@@ -1,5 +1,6 @@
 {
-    "Any vocabulary": "Buot s\u00e1tner\u00e1jut",
+    "all languages": "buot gielat",
+    "all vocabularies": "buot s\u00e1tner\u00e1jut",
     "%search_count% results for '%term%'": "%search_count% bohtosa ohcui '%term%'",
     "404 Error: The page %requested_page% cannot be found.": "404 Error: Siidu %requested_page% ii g\u00e1vdnon.",
     "A-Z": "A-\u017d",
@@ -9,7 +10,6 @@
     "Alpha-nav": "Alfabehtala\u0161",
     "Alphabetical index": "Alfabehtala\u0161 ohcu",
     "Alternate terms": "Stivrentearpmat",
-    "Any language": "Buot gielat",
     "Available vocabularies and ontologies": "S\u00e1tner\u00e1jut ja ontologiijat",
     "By group": "Joavkku mielde",
     "By parent": "Badjedoahpaga mielde",
