@@ -255,7 +255,7 @@ class VocabularyTest extends \PHPUnit\Framework\TestCase
     {
         $vocab = $this->model->getVocabulary('test');
         $info = $vocab->getInfo('fi');
-        $this->assertEquals([
+        $this->assertEqualsCanonicalizing([
             new EasyRdf\Literal('5', 'fi'),
             new EasyRdf\Literal('Version 5', 'fi'),
         ], $info['owl:versionInfo']);
